@@ -31,7 +31,7 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="WAKEUP THE DOG TO SPEAK"
+        android:text="WAKE THE DOG UP TO HEAR"
         android:layout_marginTop="80dp"
         android:textSize="20sp"
         android:layout_gravity="center"

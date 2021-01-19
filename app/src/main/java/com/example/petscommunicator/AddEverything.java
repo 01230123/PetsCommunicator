@@ -1,6 +1,9 @@
 package com.example.petscommunicator;
 
-public class AddEverything {
+import java.util.List;
+
+
+public class AddEverything{
     public void addStimulatorScreen(StimulatorScreen stimulatorScreen)
     {
         stimulatorScreen.addSprite(new int[]{
@@ -148,5 +151,25 @@ public class AddEverything {
                 R.drawable.type_icon_1_1, R.drawable.type_icon_1_2,
                 R.drawable.type_icon_2_1, R.drawable.type_icon_2_2
         });
+    }
+
+    public void setSpritePosition(List<AnimationSprite> listSprite, int gridWidth)
+    {
+        listSprite.get(0).setTop(listSprite.get(0).getTop() - (float)(gridWidth * 0.08));
+        listSprite.get(0).setLeft(listSprite.get(0).getLeft() + (float)(gridWidth * 0.5));
+        listSprite.get(0).setWidth(listSprite.get(0).getWidth() - (int)(gridWidth * 0.5));
+
+        listSprite.get(1).setTop(listSprite.get(1).getTop() + (float)(gridWidth * 0.19));
+        listSprite.get(1).setLeft(listSprite.get(1).getLeft() - (float)(gridWidth * 0.06));
+        listSprite.get(1).setWidth(listSprite.get(1).getWidth() + (int)(gridWidth * 0.83));
+
+        listSprite.get(2).setTop(listSprite.get(2).getTop() + (float)(gridWidth * 0.125));
+
+        listSprite.get(3).setTop(listSprite.get(3).getTop() - (float)(gridWidth * 0.54));
+        listSprite.get(3).setLeft(listSprite.get(3).getLeft() + (float)(gridWidth * 0.54));
+
+        listSprite.get(4).setLeft(listSprite.get(4).getLeft() - (float)(gridWidth * 0.54));
+        listSprite.get(4).setTop(listSprite.get(4).getTop() - (float)(gridWidth * 0.08));
+        listSprite.get(4).setHeight(listSprite.get(4).getHeight() - (int)(gridWidth * 0.67));
     }
 }
