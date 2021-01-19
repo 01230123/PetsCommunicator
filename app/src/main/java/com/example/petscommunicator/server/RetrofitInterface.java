@@ -15,13 +15,12 @@ import retrofit2.http.Path;
 import retrofit2.http.Url;
 
 public interface RetrofitInterface {
-
     @Multipart
     @POST("/upload")
     Call<UploadAudio> executeUpload(@Part MultipartBody.Part audio);
 
     @GET("/")
-    Call<String> executeMain();
+    Call<DogSoundList> getSounds();
 
     @GET("/download/{fileName}")
     Call<ResponseBody> downlload(@Path("fileName") String fileName);

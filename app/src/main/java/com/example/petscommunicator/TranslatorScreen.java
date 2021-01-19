@@ -68,6 +68,8 @@ public class TranslatorScreen extends MySprite{
     private String BASE_URL = "http://10.0.2.2:3000";
     private String translation = "";
 
+    private List<List<String>> soundList;
+
     @SuppressLint("ClickableViewAccessibility")
     public TranslatorScreen(Context context, MainScreen mainScreen, float top, float left, int width, int height) {
         super(context, top, left, width, height);
@@ -99,6 +101,7 @@ public class TranslatorScreen extends MySprite{
 //        if (checkWritePermission()) {
 //            download("theme1", "happy");
 //        }
+        getSoundNames();
     }
 
     private double getGaussianCurvePoint(double mean, double std, double x)
@@ -417,4 +420,27 @@ public class TranslatorScreen extends MySprite{
             }
         });
     }
+
+    public List<List<String>> getSoundNames()
+    {
+        retrofitInterface.getSounds().enqueue(new Callback<DogSoundList>() {
+            @Override
+            public void onResponse(Call<DogSoundList> call, Response<DogSoundList> response) {
+                // This is a callback method - meaning it will execute after the server response
+                // If you want to get the result (name list), you should put your code in this function
+                // If you put your code outside of this function, your code may run before the server response
+                // Thus creating a NullPointerException
+                DogSoundList re = response.body();
+                soundList = re.getDogSounds();
+                Log.d("@@@MAIN", "onResponse: "  + soundList.toString());
+            }
+
+            @Override
+            public void onFailure(Call<DogSoundList> call, Throwable t) {
+                Log.d("@@@MAIN", "fail main:");
+            }
+        });
+
+        return soundList;
+    };
 }
