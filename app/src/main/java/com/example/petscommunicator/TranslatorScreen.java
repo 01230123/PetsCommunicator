@@ -78,10 +78,10 @@ public class TranslatorScreen extends MySprite{
         tw = myLayout.findViewById(R.id.textView);
         recButton = new MySprite(
                 getContext(),
-                getHeight() - 700,
-                (float)(getWidth() - 500) / 2,
-                500,
-                500
+                getHeight() - 1000,
+                getWidth() - 580,
+                550,
+                550
         );
         recButton.addBmp(new int[]{
                 R.drawable.microphone,
@@ -277,7 +277,7 @@ public class TranslatorScreen extends MySprite{
         tw.measure(widthSpec, heightSpec);
         tw.layout(0, 0, tw.getMeasuredWidth(), tw.getMeasuredHeight());
         canvas.save();
-        canvas.translate((float)(getWidth() - tw.getMeasuredWidth()) / 2, 400);
+        canvas.translate((float)(getWidth() - tw.getMeasuredWidth()) / 2, 300);
         tw.draw(canvas);
         canvas.restore();
 
@@ -286,7 +286,7 @@ public class TranslatorScreen extends MySprite{
             graph.measure(widthSpec, heightSpec);
             graph.layout(0, 0, this.getWidth(), 900);
             canvas.save();
-            canvas.translate(0, 0);
+            canvas.translate(0, -400);
             graph.draw(canvas);
             canvas.restore();
         }
