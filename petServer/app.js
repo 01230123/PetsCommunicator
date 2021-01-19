@@ -92,8 +92,30 @@ app.get('/getSounds', (req, res) =>{
     res.status(200).send(JSON.stringify(message))
 })
 
-const dogMsg = ["I love you", "I want to play with you!", "Get away from me!!", "You're in danger", 
-    "I'm not felling well", "Go pet me"];
+const dogMsg = [
+    // "I love you",
+    // "I want to play with you!",
+    // "Get away from me!!",
+    // "You're in danger", 
+    // "I'm not felling well",
+    // "Go pet me",
+    "Let's play outdoor\nヽ（≧□≦）ノ",
+    "I'm very hungry\n   o(TヘTo)",
+    "I can fly\no(*￣︶￣*)o",
+    "What time is it?\no(〃＾▽＾〃)o",
+    "I saw a giant bird!\nΣ(っ °Д °;)っ",
+    "I'm thirsty\n（〃｀ 3′〃）",
+    "I’m hungry\n＞︿＜.",
+    "I need a girl friend!\n(┬┬﹏┬┬)",
+    "Come with me\n( •̀ ω •́ )✧",
+    "Follow me!\no(*°▽°*)o",
+    "I want to play ball\n(/≧▽≦)/",
+    "Glad to meet you\n(´▽`ʃ♡ƪ)",
+    "I'm sleepy\n(✿◡‿◡)",
+    "I’m only a child\n(❁´◡`❁)",
+    "I smell something…\n(⊙ˍ⊙)",
+    "It's so hot!\n(╬▔皿▔)╯"
+];
 
 
 app.post('/upload', (req, res) =>
