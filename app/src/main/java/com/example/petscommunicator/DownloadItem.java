@@ -9,10 +9,12 @@ import com.example.petscommunicator.R;
 public class DownloadItem {
     private Bitmap icon;
     private String title;
+    private String path;
 
-    public DownloadItem(String title, Context context)
+    public DownloadItem(String path, Context context)
     {
-        this.title = title;
+        this.path = path;
+        this.title = path.substring(path.indexOf('/') + 1);
         icon = BitmapFactory.decodeResource(context.getResources(), R.drawable.download_icon);
         icon = Bitmap.createScaledBitmap(icon, 200, 200, false);
     }
@@ -23,6 +25,10 @@ public class DownloadItem {
 
     public Bitmap getIcon() {
         return icon;
+    }
+
+    public String getPath() {
+        return path;
     }
 
     public String getTitle() {
