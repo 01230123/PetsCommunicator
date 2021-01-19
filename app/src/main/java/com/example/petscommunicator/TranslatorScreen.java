@@ -68,6 +68,8 @@ public class TranslatorScreen extends MySprite{
     private String BASE_URL = "http://10.0.2.2:3000";
     private String translation = "";
 
+    private List<List<String>> soundList;
+
     @SuppressLint("ClickableViewAccessibility")
     public TranslatorScreen(Context context, MainScreen mainScreen, float top, float left, int width, int height) {
         super(context, top, left, width, height);
