@@ -23,6 +23,7 @@ public class StimulatorScreen extends MySprite{
     private List<AnimationSprite> listSprite;
     private List<MySprite> clickArea;
     private List<TextView> emotionText;
+    private AddEverything adder;
 
     public StimulatorScreen(Context context, MainScreen mainScreen, float top, float left, int width, int height, int numberOfSprite) {
         super(context, top, left, width, height);
@@ -31,6 +32,7 @@ public class StimulatorScreen extends MySprite{
         this.mainScreen = mainScreen;
         this.mode = 0;
         this.currentPlaySprite = 0;
+        adder = new AddEverything();
 
         listSprite = new ArrayList<>();
         clickArea = new ArrayList<>();
@@ -41,8 +43,8 @@ public class StimulatorScreen extends MySprite{
         {
             TextView tv = new TextView(getContext());
             tv.setText(s);
-            tv.setTextSize(25);
-            tv.setTextColor(Color.parseColor("#8e5768"));
+            tv.setTextSize(15);
+            tv.setTextColor(Color.parseColor("#ede7f6"));
             emotionText.add(tv);
         }
 //        scaleSprite();
@@ -52,12 +54,12 @@ public class StimulatorScreen extends MySprite{
 
     private void setSprite() {
         int[][] offset = new int[][]{
-                {9, 3, 5},
-                {7, 2, 3},
-                {10, 0, 4},
+                {10, 3, 5},
+                {7, 3, 3},
+                {11, 0, 4},
                 {8, 6, 2},
-                {7, 0, 4},
-                {12, 7, 2}
+                {8, 0, 4},
+                {13, 7, 2}
         };
         int numberOfRow = 16;
         int numberOfCol = 9;
@@ -73,32 +75,29 @@ public class StimulatorScreen extends MySprite{
             );
             float dogTop = gridHeight * offset[i][0];
             float dogLeft = gridWidth * offset[i][1];
+<<<<<<< HEAD
+            Log.d("@@@@", "Set dog " + getWidth() + " at " + dogLeft + ", " + dogTop);
+=======
 //            Log.d("@@@@", "Set dog " + i + " at " + dogLeft + ", " + dogTop);
+>>>>>>> 84e25b9cbbbce94810c1f93739d844285f85c80d
             dog.setTop(dogTop);
             dog.setLeft(dogLeft);
             dog.setWidth(gridWidth * offset[i][2]);
             dog.setHeight(gridHeight * offset[i][2]);
             listSprite.add(dog);
         }
-        listSprite.get(0).setTop(listSprite.get(0).getTop() - 65);
-        listSprite.get(0).setLeft(listSprite.get(0).getLeft() + 60);
 
-        listSprite.get(1).setWidth(listSprite.get(1).getWidth() + 100);
-
-        listSprite.get(3).setTop(listSprite.get(3).getTop() - 70);
-        listSprite.get(3).setLeft(listSprite.get(3).getLeft() + 70);
-
-        listSprite.get(4).setLeft(listSprite.get(4).getLeft() - 80);
+        adder.setSpritePosition(listSprite,gridWidth);
     }
 
     private void setClickArea(){
         int[][] offset = new int[][]{
-                {10, 5, 2},
-                {8, 3, 2},
-                {11, 1, 3},
+                {11, 5, 2},
+                {8, 4, 2},
+                {12, 1, 3},
                 {8, 7, 1},
                 {9, 1, 2},
-                {12, 7, 2}
+                {13, 7, 2}
         };
         int numberOfRow = 16;
         int numberOfCol = 9;
@@ -151,33 +150,41 @@ public class StimulatorScreen extends MySprite{
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
-        for (AnimationSprite s : listSprite)
+
+        for (int i = 0; i < emotionText.size(); i++)
         {
+            TextView tv = emotionText.get(i);
+            @SuppressLint("Range")
+            int widthSpec = View.MeasureSpec.makeMeasureSpec(
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    View.MeasureSpec.UNSPECIFIED
+            );
+            int heightSpec = View.MeasureSpec.makeMeasureSpec(400,
+                    View.MeasureSpec.UNSPECIFIED
+            );
+            tv.measure(widthSpec, heightSpec);
+            tv.layout(0, 0, tv.getMeasuredWidth(), tv.getMeasuredHeight());
+            canvas.save();
+            if(i==0){
+                canvas.translate(
+                        listSprite.get(i).getLeft() + (float)(listSprite.get(i).getWidth() - tv.getWidth()) / 2,
+                        listSprite.get(i).getTop() + (float)(listSprite.get(i).getHeight() - 1.8 * getHeight()/16)
+                );
+            }
+            else {
+                canvas.translate(
+                        listSprite.get(i).getLeft() + (float)(listSprite.get(i).getWidth() - tv.getWidth()) / 2,
+                        listSprite.get(i).getTop() + listSprite.get(i).getHeight()
+                );
+            }
+            tv.draw(canvas);
+            canvas.restore();
+        }
+
+        for (AnimationSprite s : listSprite) {
 //            Log.d("@@@@", "Draw at " + s.getLeft() + ", " + s.getTop() + " with bmp " + s.getBmpPos());
             s.draw(canvas);
         }
-
-//        for (int i = 0; i < emotionText.size(); i++)
-//        {
-//            TextView tv = emotionText.get(i);
-//            @SuppressLint("Range")
-//            int widthSpec = View.MeasureSpec.makeMeasureSpec(
-//                    ViewGroup.LayoutParams.WRAP_CONTENT,
-//                    View.MeasureSpec.UNSPECIFIED
-//            );
-//            int heightSpec = View.MeasureSpec.makeMeasureSpec(400,
-//                    View.MeasureSpec.UNSPECIFIED
-//            );
-//            tv.measure(widthSpec, heightSpec);
-//            tv.layout(0, 0, tv.getMeasuredWidth(), tv.getMeasuredHeight());
-//            canvas.save();
-//            canvas.translate(
-//                    listSprite.get(i).getLeft() + (float)(listSprite.get(i).getWidth() - tv.getWidth()) / 2,
-//                    listSprite.get(i).getTop() + listSprite.get(i).getHeight()
-//            );
-//            tv.draw(canvas);
-//            canvas.restore();
-//        }
     }
 
     public void handleClick(float x, float y) {
