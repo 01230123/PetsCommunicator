@@ -26,10 +26,10 @@
         <item>Puppy</item>
         <item>Scared</item>
     </string-array>
-    <string name="tab_text_1">Angry</string>
-    <string name="tab_text_2">Happy</string>
+    <string name="tab_text_1">Happy</string>
+    <string name="tab_text_2">Angry</string>
     <string name="tab_text_3">Friendly</string>
-    <string name="tab_text_4">Puppy</string>
-    <string name="tab_text_5">Upset</string>
+    <string name="tab_text_4">Upset</string>
+    <string name="tab_text_5">Puppy</string>
     <string name="tab_text_6">Scared</string>
 </resources>

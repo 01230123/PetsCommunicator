@@ -3,6 +3,7 @@ package com.example.petscommunicator;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
+import android.util.Log;
 
 public class SettingMenuSprite extends MySprite{
     private int itemWidth;
@@ -121,6 +122,7 @@ public class SettingMenuSprite extends MySprite{
     }
 
     private void handleDownloadIntent() {
+        Log.d("@@@@", "Ready to intent");
         Intent intent = new Intent(getContext(), DownloadActivity.class);
         getContext().startActivity(intent);
     }

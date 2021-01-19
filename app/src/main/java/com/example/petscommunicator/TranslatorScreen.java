@@ -8,8 +8,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.media.MediaRecorder;
-import android.os.Build;
-import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
 import android.text.format.Formatter;
@@ -20,23 +18,22 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 
+import com.example.petscommunicator.server.DogSoundList;
 import com.example.petscommunicator.server.RetrofitInterface;
 import com.example.petscommunicator.server.UploadAudio;
+import com.example.petscommunicator.server.DogSoundList;
 import com.google.common.io.Files;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.GridLabelRenderer;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
-//import org.apache.commons.io.IOUtils;
-
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 
 import okhttp3.MediaType;
@@ -48,6 +45,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+
+//import org.apache.commons.io.IOUtils;
 
 public class TranslatorScreen extends MySprite{
     private MainScreen mainScreen;
@@ -69,6 +68,7 @@ public class TranslatorScreen extends MySprite{
     private String translation = "";
 
     private List<List<String>> soundList;
+    private boolean translating = false;
 
     @SuppressLint("ClickableViewAccessibility")
     public TranslatorScreen(Context context, MainScreen mainScreen, float top, float left, int width, int height) {
@@ -80,16 +80,15 @@ public class TranslatorScreen extends MySprite{
         tw = myLayout.findViewById(R.id.textView);
         recButton = new MySprite(
                 getContext(),
-                getHeight() - 1000,
-                getWidth() - 580,
-                550,
-                550
+                (float)(getHeight() * 0.47),
+                (float)(getWidth() * 0.46),
+                (int)(getWidth() * 0.5),
+                (int)(getHeight() * 0.29)
         );
         recButton.addBmp(new int[]{
                 R.drawable.microphone,
                 R.drawable.rec
         });
-
         createGraph();
 
         retrofit = new Retrofit.Builder().baseUrl(BASE_URL)
@@ -101,7 +100,7 @@ public class TranslatorScreen extends MySprite{
 //        if (checkWritePermission()) {
 //            download("theme1", "happy");
 //        }
-        getSoundNames();
+//        getSoundNames();
     }
 
     private double getGaussianCurvePoint(double mean, double std, double x)
@@ -144,7 +143,8 @@ public class TranslatorScreen extends MySprite{
     private void stopRecording() {
         //final Toast tStop = Toast.makeText(getContext(),"Stop Recording", Toast.LENGTH_SHORT);
         //tStop.show();
-        tw.setText("value");
+        tw.setText("Translating...");
+        translating = true;
         dogVoiceToTextTranslation(outputFile);
 
         try {
@@ -219,15 +219,21 @@ public class TranslatorScreen extends MySprite{
             public void onResponse(Call<UploadAudio> call, Response<UploadAudio> response) {
                 if (response.code() == 200)
                 {
+                    Log.d("@@@@", "Success");
                     UploadAudio re = response.body();
                     String text = re.getName();
                     tw.setText(text);
+                    translating = false;
+                    mainScreen.invalidate();
                 }
             }
             @Override
             public void onFailure(Call<UploadAudio> call, Throwable t) {
+                Log.d("@@@@", "Failed");
                 Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_LONG).show();
                 tw.setText("Error");
+                translating = false;
+                mainScreen.invalidate();
             }
         });
 
@@ -304,6 +310,7 @@ public class TranslatorScreen extends MySprite{
 
     //@RequiresApi(api = Build.VERSION_CODES.O)
     public void doRecord() {
+        if (translating) return;
         if (!rec)
         {
             //getWritePermission();
@@ -393,54 +400,4 @@ public class TranslatorScreen extends MySprite{
         }
     }
 
-
-    public void download(String themeName, String emotionName){
-        String audioExtension = ".mp3";
-        String url = themeName + "/" + emotionName + audioExtension;
-        final String fileName = "/" + emotionName + audioExtension;
-        retrofitInterface.downlload(url).enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                try {
-                    File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-                    File file = new File(path, fileName);
-                    boolean a = file.createNewFile();
-                    Files.asByteSink(file).write(response.body().bytes());
-                    String file_size = Formatter.formatShortFileSize(getContext(),file.length());
-                    Log.d("@@@@", file_size);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Log.d("@@@@", "Cannot down load file");
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.d("@@@@", "Cannot down load file on failure");
-            }
-        });
-    }
-
-    public List<List<String>> getSoundNames()
-    {
-        retrofitInterface.getSounds().enqueue(new Callback<DogSoundList>() {
-            @Override
-            public void onResponse(Call<DogSoundList> call, Response<DogSoundList> response) {
-                // This is a callback method - meaning it will execute after the server response
-                // If you want to get the result (name list), you should put your code in this function
-                // If you put your code outside of this function, your code may run before the server response
-                // Thus creating a NullPointerException
-                DogSoundList re = response.body();
-                soundList = re.getDogSounds();
-                Log.d("@@@MAIN", "onResponse: "  + soundList.toString());
-            }
-
-            @Override
-            public void onFailure(Call<DogSoundList> call, Throwable t) {
-                Log.d("@@@MAIN", "fail main:");
-            }
-        });
-
-        return soundList;
-    };
 }
