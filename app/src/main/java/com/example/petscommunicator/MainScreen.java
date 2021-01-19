@@ -51,7 +51,7 @@ public class MainScreen extends View {
                 screenWidth,
                 screenHeight - typeSwitchSprite.getHeight()
         );
-        background.addBmp(new int[]{R.drawable.bgdog});
+        background.addBmp(new int[]{R.drawable.bg});
     }
 
     private void createTranslatorScreen() {
@@ -62,6 +62,8 @@ public class MainScreen extends View {
                 0,
                 screenWidth,
                 screenHeight - typeSwitchSprite.getHeight());
+
+        translatorScreen.addBmp(new int[]{R.drawable.bgrec});
     }
 
     private void createStimulatorScreen() {
@@ -75,6 +77,7 @@ public class MainScreen extends View {
                 screenHeight - typeSwitchSprite.getHeight(),
                 6);
 
+        stimulatorScreen.addBmp(new int[]{R.drawable.bgdog});
         adder.addStimulatorScreen(stimulatorScreen);
 
     }

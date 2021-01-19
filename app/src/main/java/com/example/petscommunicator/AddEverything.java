@@ -119,7 +119,7 @@ public class AddEverything {
                 R.drawable.mode_2
         });
         settingMenuSprite.setSoundButtonBmp(new int[]{
-                R.drawable.sound_1
+                R.drawable.sound_2
         });
         settingMenuSprite.setCreditButtonBmp(new int[]{
                 R.drawable.credit_1
