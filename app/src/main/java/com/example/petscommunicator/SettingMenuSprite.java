@@ -1,6 +1,7 @@
 package com.example.petscommunicator;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 
 public class SettingMenuSprite extends MySprite{
@@ -120,7 +121,8 @@ public class SettingMenuSprite extends MySprite{
     }
 
     private void handleDownloadIntent() {
-
+        Intent intent = new Intent(getContext(), DownloadActivity.class);
+        getContext().startActivity(intent);
     }
 
     public void handleCredit(float x, float y) {

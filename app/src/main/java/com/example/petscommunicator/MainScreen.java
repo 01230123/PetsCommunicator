@@ -52,7 +52,7 @@ public class MainScreen extends View {
                 screenWidth,
                 screenHeight - typeSwitchSprite.getHeight()
         );
-        background.addBmp(new int[]{R.drawable.bgdog});
+        background.addBmp(new int[]{R.drawable.bg});
     }
 
     private void createTranslatorScreen() {

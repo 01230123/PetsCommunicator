@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -19,7 +20,8 @@ public class StimulatorScreen extends MySprite{
     private int mode;
     private int currentPlaySprite;
 
-    private List<AnimationSprite> gridSprite;
+    private List<AnimationSprite> listSprite;
+    private List<MySprite> clickArea;
     private List<TextView> emotionText;
 
     public StimulatorScreen(Context context, MainScreen mainScreen, float top, float left, int width, int height, int numberOfSprite) {
@@ -30,7 +32,8 @@ public class StimulatorScreen extends MySprite{
         this.mode = 0;
         this.currentPlaySprite = 0;
 
-        gridSprite = new ArrayList<>();
+        listSprite = new ArrayList<>();
+        clickArea = new ArrayList<>();
         emotionText = new ArrayList<>();
 
         String[] emotionName = getContext().getResources().getStringArray(R.array.emotion);
@@ -42,83 +45,156 @@ public class StimulatorScreen extends MySprite{
             tv.setTextColor(Color.parseColor("#8e5768"));
             emotionText.add(tv);
         }
-        scaleSprite();
+//        scaleSprite();
+        setSprite();
+        setClickArea();
     }
 
-    private void scaleSprite() {
-        int numberOfCol = 2;
-        int numberOfRow = (numberOfSprite + numberOfCol - 1) / numberOfCol;
+    private void setSprite() {
+        int[][] offset = new int[][]{
+                {9, 3, 5},
+                {7, 2, 3},
+                {10, 0, 4},
+                {8, 6, 2},
+                {7, 0, 4},
+                {12, 7, 2}
+        };
+        int numberOfRow = 16;
+        int numberOfCol = 9;
+        int gridHeight = getHeight() / numberOfRow;
+        int gridWidth = getWidth() / numberOfCol;
 
-        int spriteWidth = getWidth() / (numberOfCol + 1);
-        int spriteHeight = getHeight() / (numberOfRow + 1);
         for (int i = 0; i < numberOfSprite; i++)
         {
-            AnimationSprite sprite = new AnimationSprite(getContext(), mainScreen, 0, 0, 0, 0);
-            sprite.setWidth(spriteWidth);
-            sprite.setHeight(spriteHeight);
-            int row = i / 2;
-            int column = i % 2;
-            sprite.setTop(spriteHeight * row + (float)spriteHeight / (numberOfRow + 1) * (row + 1));
-            sprite.setLeft(spriteWidth * column + (float)spriteWidth / (numberOfCol + 1) * (column + 1));
-            gridSprite.add(sprite);
+            AnimationSprite dog = new AnimationSprite(
+                    getContext(),
+                    mainScreen,
+                    0,0,0,0
+            );
+            float dogTop = gridHeight * offset[i][0];
+            float dogLeft = gridWidth * offset[i][1];
+            Log.d("@@@@", "Set dog " + i + " at " + dogLeft + ", " + dogTop);
+            dog.setTop(dogTop);
+            dog.setLeft(dogLeft);
+            dog.setWidth(gridWidth * offset[i][2]);
+            dog.setHeight(gridHeight * offset[i][2]);
+            listSprite.add(dog);
+        }
+        listSprite.get(0).setTop(listSprite.get(0).getTop() - 65);
+        listSprite.get(0).setLeft(listSprite.get(0).getLeft() + 60);
+
+        listSprite.get(1).setWidth(listSprite.get(1).getWidth() + 100);
+
+        listSprite.get(3).setTop(listSprite.get(3).getTop() - 70);
+        listSprite.get(3).setLeft(listSprite.get(3).getLeft() + 70);
+
+        listSprite.get(4).setLeft(listSprite.get(4).getLeft() - 80);
+    }
+
+    private void setClickArea(){
+        int[][] offset = new int[][]{
+                {10, 5, 2},
+                {8, 3, 2},
+                {11, 1, 3},
+                {8, 7, 1},
+                {9, 1, 2},
+                {12, 7, 2}
+        };
+        int numberOfRow = 16;
+        int numberOfCol = 9;
+        int gridHeight = getHeight() / numberOfRow;
+        int gridWidth = getWidth() / numberOfCol;
+        for (int i = 0; i < numberOfSprite; i++)
+        {
+            MySprite area = new MySprite(
+                    getContext(),
+                    gridHeight * offset[i][0],
+                    gridWidth * offset[i][1],
+                    gridWidth * offset[i][2],
+                    gridHeight * offset[i][2]
+            );
+            clickArea.add(area);
         }
     }
 
+//    private void scaleSprite() {
+//        int numberOfCol = 2;
+//        int numberOfRow = (numberOfSprite + numberOfCol - 1) / numberOfCol;
+//
+//        int spriteWidth = getWidth() / (numberOfCol + 1);
+//        int spriteHeight = getHeight() / (numberOfRow + 1);
+//        for (int i = 0; i < numberOfSprite; i++)
+//        {
+//            AnimationSprite sprite = new AnimationSprite(getContext(), mainScreen, 0, 0, 0, 0);
+//            sprite.setWidth(spriteWidth);
+//            sprite.setHeight(spriteHeight);
+//            int row = i / 2;
+//            int column = i % 2;
+//            sprite.setTop(spriteHeight * row + (float)spriteHeight / (numberOfRow + 1) * (row + 1));
+//            sprite.setLeft(spriteWidth * column + (float)spriteWidth / (numberOfCol + 1) * (column + 1));
+//            gridSprite.add(sprite);
+//        }
+//    }
+
     public void addSprite(int[] bmpIdList)
     {
-        gridSprite.get(currentAddedSprite).addBmp(bmpIdList);
+        listSprite.get(currentAddedSprite).addBmp(bmpIdList);
         currentAddedSprite++;
-        currentAddedSprite %= gridSprite.size();
+        currentAddedSprite %= listSprite.size();
     }
 
     public void addSound(int spriteId, int[] soundIdList)
     {
-        gridSprite.get(spriteId % gridSprite.size()).addSound(soundIdList);
+        listSprite.get(spriteId % listSprite.size()).addSound(soundIdList);
     }
 
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
-        for (AnimationSprite s : gridSprite)
-            s.draw(canvas);
-
-        for (int i = 0; i < emotionText.size(); i++)
+        for (AnimationSprite s : listSprite)
         {
-            TextView tv = emotionText.get(i);
-            @SuppressLint("Range")
-            int widthSpec = View.MeasureSpec.makeMeasureSpec(
-                    ViewGroup.LayoutParams.WRAP_CONTENT,
-                    View.MeasureSpec.UNSPECIFIED
-            );
-            int heightSpec = View.MeasureSpec.makeMeasureSpec(400,
-                    View.MeasureSpec.UNSPECIFIED
-            );
-            tv.measure(widthSpec, heightSpec);
-            tv.layout(0, 0, tv.getMeasuredWidth(), tv.getMeasuredHeight());
-            canvas.save();
-            canvas.translate(
-                    gridSprite.get(i).getLeft() + (float)(gridSprite.get(i).getWidth() - tv.getWidth()) / 2,
-                    gridSprite.get(i).getTop() + gridSprite.get(i).getHeight()
-            );
-            tv.draw(canvas);
-            canvas.restore();
+//            Log.d("@@@@", "Draw at " + s.getLeft() + ", " + s.getTop() + " with bmp " + s.getBmpPos());
+            s.draw(canvas);
         }
+
+//        for (int i = 0; i < emotionText.size(); i++)
+//        {
+//            TextView tv = emotionText.get(i);
+//            @SuppressLint("Range")
+//            int widthSpec = View.MeasureSpec.makeMeasureSpec(
+//                    ViewGroup.LayoutParams.WRAP_CONTENT,
+//                    View.MeasureSpec.UNSPECIFIED
+//            );
+//            int heightSpec = View.MeasureSpec.makeMeasureSpec(400,
+//                    View.MeasureSpec.UNSPECIFIED
+//            );
+//            tv.measure(widthSpec, heightSpec);
+//            tv.layout(0, 0, tv.getMeasuredWidth(), tv.getMeasuredHeight());
+//            canvas.save();
+//            canvas.translate(
+//                    listSprite.get(i).getLeft() + (float)(listSprite.get(i).getWidth() - tv.getWidth()) / 2,
+//                    listSprite.get(i).getTop() + listSprite.get(i).getHeight()
+//            );
+//            tv.draw(canvas);
+//            canvas.restore();
+//        }
     }
 
     public void handleClick(float x, float y) {
         for (int i = 0; i < numberOfSprite; i++)
-            if (gridSprite.get(i).isSelected(x, y))
+            if (clickArea.get(i).isSelected(x, y))
             {
                 if (mode == 0)
-                    if (i != currentPlaySprite && gridSprite.get(currentPlaySprite).isTurnedOn)
+                    if (i != currentPlaySprite && listSprite.get(currentPlaySprite).isTurnedOn)
                     {
-                        gridSprite.get(currentPlaySprite).isTurnedOn =
-                                !gridSprite.get(currentPlaySprite).isTurnedOn;
-                        gridSprite.get(currentPlaySprite).handleClick(getContext());
+                        listSprite.get(currentPlaySprite).isTurnedOn =
+                                !listSprite.get(currentPlaySprite).isTurnedOn;
+                        listSprite.get(currentPlaySprite).handleClick(getContext());
                     }
-                gridSprite.get(i).isTurnedOn = !gridSprite.get(i).isTurnedOn;
-                gridSprite.get(i).handleClick(getContext());
+                listSprite.get(i).isTurnedOn = !listSprite.get(i).isTurnedOn;
+                listSprite.get(i).handleClick(getContext());
                 currentPlaySprite = i;
+                break;
             }
     }
 
@@ -128,29 +204,29 @@ public class StimulatorScreen extends MySprite{
             for (int i = 0; i < numberOfSprite; i++)
                 if (i != currentPlaySprite)
                 {
-                    if (gridSprite.get(i).isTurnedOn)
+                    if (listSprite.get(i).isTurnedOn)
                     {
-                        gridSprite.get(i).isTurnedOn = false;
-                        gridSprite.get(i).handleClick(getContext());
+                        listSprite.get(i).isTurnedOn = false;
+                        listSprite.get(i).handleClick(getContext());
                     }
                 }
     }
 
-    public void muteSound()
-    {
-        for (AnimationSprite dog: gridSprite)
-            dog.mute();
-    }
-
-    public void unmuteSound()
-    {
-        for (AnimationSprite dog: gridSprite)
-            dog.unmute();
-    }
+//    public void muteSound()
+//    {
+//        for (AnimationSprite dog: listSprite)
+//            dog.mute();
+//    }
+//
+//    public void unmuteSound()
+//    {
+//        for (AnimationSprite dog: listSprite)
+//            dog.unmute();
+//    }
 
     public void destroyEverything()
     {
-        for (AnimationSprite dog: gridSprite){
+        for (AnimationSprite dog: listSprite){
             if (dog.isTurnedOn)
             {
                 dog.isTurnedOn = false;

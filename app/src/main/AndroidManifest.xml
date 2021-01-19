@@ -29,6 +29,7 @@
             android:screenOrientation="portrait">
         </activity>
         <activity
+            android:theme="@style/AppTheme"
             android:name="com.example.petscommunicator.DownloadActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />

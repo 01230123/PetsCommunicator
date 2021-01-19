@@ -46,9 +46,9 @@ public class MySprite {
         if (bmpPos == -1) bmpPos = 0;
         for (int id : bmpIdList)
         {
-            Log.d("@@@@", "ID: " + id);
+//            Log.d("@@@@", "ID: " + id);
             Bitmap bmp = BitmapFactory.decodeResource(mainScreen.getResources(), id);
-            Log.d("@@@@", "Decode Success");
+//            Log.d("@@@@", "Decode Success");
             bmp = Bitmap.createScaledBitmap(bmp, width, height, false);
             bmpList.add(bmp);
         }
