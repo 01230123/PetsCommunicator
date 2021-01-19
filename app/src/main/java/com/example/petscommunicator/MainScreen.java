@@ -32,6 +32,7 @@ public class MainScreen extends View {
 
         adder = new AddEverything();
 
+
         createSettingIcon();
         createSettingMenu();
         createSwitchTypeButton();
@@ -50,7 +51,7 @@ public class MainScreen extends View {
                 screenWidth,
                 screenHeight - typeSwitchSprite.getHeight()
         );
-        background.addBmp(new int[]{R.drawable.bg});
+        background.addBmp(new int[]{R.drawable.bgdog});
     }
 
     private void createTranslatorScreen() {
@@ -64,6 +65,7 @@ public class MainScreen extends View {
     }
 
     private void createStimulatorScreen() {
+
         stimulatorScreen = new StimulatorScreen(
                 getContext(),
                 this,
@@ -74,6 +76,7 @@ public class MainScreen extends View {
                 6);
 
         adder.addStimulatorScreen(stimulatorScreen);
+
     }
 
     private void createTransitionScreen() {
