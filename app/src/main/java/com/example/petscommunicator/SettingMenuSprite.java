@@ -30,10 +30,6 @@ public class SettingMenuSprite extends MySprite{
                 getLeft() - 75,
                 getWidth() + 150,
                 getHeight() + 300);
-        if (1 == 1)
-        {
-            int u = 1;
-        }
         creditBmp.addBmp(new int[]{R.drawable.creditpage});
 
     }

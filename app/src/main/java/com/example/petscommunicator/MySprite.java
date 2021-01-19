@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +46,9 @@ public class MySprite {
         if (bmpPos == -1) bmpPos = 0;
         for (int id : bmpIdList)
         {
+            Log.d("@@@@", "ID: " + id);
             Bitmap bmp = BitmapFactory.decodeResource(mainScreen.getResources(), id);
+            Log.d("@@@@", "Decode Success");
             bmp = Bitmap.createScaledBitmap(bmp, width, height, false);
             bmpList.add(bmp);
         }
