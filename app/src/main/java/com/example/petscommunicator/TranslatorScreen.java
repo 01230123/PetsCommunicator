@@ -78,10 +78,10 @@ public class TranslatorScreen extends MySprite{
         tw = myLayout.findViewById(R.id.textView);
         recButton = new MySprite(
                 getContext(),
-                getHeight() - 700,
-                (float)(getWidth() - 500) / 2,
-                500,
-                500
+                getHeight() - 1000,
+                getWidth() - 580,
+                550,
+                550
         );
         recButton.addBmp(new int[]{
                 R.drawable.microphone,
@@ -95,10 +95,10 @@ public class TranslatorScreen extends MySprite{
                 .build();
         retrofitInterface = retrofit.create(RetrofitInterface.class);
 
-        getWritePermission();
-        if (checkWritePermission()) {
-            download("theme1", "happy");
-        }
+//        getWritePermission();
+//        if (checkWritePermission()) {
+//            download("theme1", "happy");
+//        }
     }
 
     private double getGaussianCurvePoint(double mean, double std, double x)
@@ -250,7 +250,7 @@ public class TranslatorScreen extends MySprite{
 
     private double getStdForGraph(int amp)
     {
-        Log.d("@@@@", "getStdForGraph: " + amp);
+//        Log.d("@@@@", "getStdForGraph: " + amp);
         if (amp == 0)
             return 100;
 
@@ -277,7 +277,7 @@ public class TranslatorScreen extends MySprite{
         tw.measure(widthSpec, heightSpec);
         tw.layout(0, 0, tw.getMeasuredWidth(), tw.getMeasuredHeight());
         canvas.save();
-        canvas.translate((float)(getWidth() - tw.getMeasuredWidth()) / 2, 400);
+        canvas.translate((float)(getWidth() - tw.getMeasuredWidth()) / 2, 300);
         tw.draw(canvas);
         canvas.restore();
 
@@ -286,7 +286,7 @@ public class TranslatorScreen extends MySprite{
             graph.measure(widthSpec, heightSpec);
             graph.layout(0, 0, this.getWidth(), 900);
             canvas.save();
-            canvas.translate(0, 0);
+            canvas.translate(0, -400);
             graph.draw(canvas);
             canvas.restore();
         }
@@ -295,26 +295,26 @@ public class TranslatorScreen extends MySprite{
     //@RequiresApi(api = Build.VERSION_CODES.O)
     public void handleClick(float x, float y)
     {
-        Log.d("@@@@", "I'm here");
         if (recButton.isSelected(x, y))
             doRecord();
     }
 
     //@RequiresApi(api = Build.VERSION_CODES.O)
     public void doRecord() {
-        Log.d("@@@@", "FK");
         if (!rec)
         {
             //getWritePermission();
-            //getRecordPermission();
             //getInternetPermission();
             //if (checkWritePermission() && checkRecordPermission() && checkInternetPermission())
             //{
-            rec = true;
-            startRecording();
-            //}
-            //else
-            //    return;
+            getRecordPermission();
+            if (checkRecordPermission())
+            {
+                rec = true;
+                startRecording();
+            }
+            else
+                return;
         }
         else
         {
@@ -404,16 +404,16 @@ public class TranslatorScreen extends MySprite{
                     boolean a = file.createNewFile();
                     Files.asByteSink(file).write(response.body().bytes());
                     String file_size = Formatter.formatShortFileSize(getContext(),file.length());
-                    Log.d("@@@DOWN", file_size);
+                    Log.d("@@@@", file_size);
                 } catch (IOException e) {
                     e.printStackTrace();
-                    Log.d("@@@DOWN", "Cannot down load file");
+                    Log.d("@@@@", "Cannot down load file");
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.d("@@@DOWN", "Cannot down load file on failure");
+                Log.d("@@@@", "Cannot down load file on failure");
             }
         });
     }

@@ -4,6 +4,12 @@ android {
     compileSdkVersion 30
     buildToolsVersion "30.0.2"
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+
     defaultConfig {
         applicationId "com.example.petscommunicator"
         minSdkVersion 23
@@ -27,6 +33,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
 
+    implementation("com.google.guava:guava:30.1-android")
     implementation 'androidx.preference:preference:1.1.1'
     implementation 'junit:junit:4.12'
     implementation 'com.squareup.retrofit2:retrofit:2.3.0'
