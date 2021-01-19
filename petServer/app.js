@@ -28,6 +28,12 @@ app.get('/', (req, res) =>{
     res.send("Hello world!");
 })
 
+app.get('/download/:filename', (req, res) =>{
+    console.log(req.body);
+    console.log(req.params.filename);
+    res.sendFile(__dirname + '/public/petSound/' + req.params.filename);
+})
+
 app.post('/upload', (req, res) =>
 {
     const message = {

@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
+import android.text.format.Formatter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,12 +25,16 @@ import androidx.core.app.ActivityCompat;
 
 import com.example.petscommunicator.server.RetrofitInterface;
 import com.example.petscommunicator.server.UploadAudio;
+import com.google.common.io.Files;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.GridLabelRenderer;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
+//import org.apache.commons.io.IOUtils;
+
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Random;
@@ -37,6 +42,7 @@ import java.util.Random;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -88,6 +94,11 @@ public class TranslatorScreen extends MySprite{
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         retrofitInterface = retrofit.create(RetrofitInterface.class);
+
+        getWritePermission();
+        if (checkWritePermission()) {
+            download("theme1", "happy");
+        }
     }
 
     private double getGaussianCurvePoint(double mean, double std, double x)
@@ -377,5 +388,33 @@ public class TranslatorScreen extends MySprite{
                     0
             );
         }
+    }
+
+
+    public void download(String themeName, String emotionName){
+        String audioExtension = ".mp3";
+        String url = themeName + "/" + emotionName + audioExtension;
+        final String fileName = "/" + emotionName + audioExtension;
+        retrofitInterface.downlload(url).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                try {
+                    File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+                    File file = new File(path, fileName);
+                    boolean a = file.createNewFile();
+                    Files.asByteSink(file).write(response.body().bytes());
+                    String file_size = Formatter.formatShortFileSize(getContext(),file.length());
+                    Log.d("@@@DOWN", file_size);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Log.d("@@@DOWN", "Cannot down load file");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.d("@@@DOWN", "Cannot down load file on failure");
+            }
+        });
     }
 }
