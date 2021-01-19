@@ -24,7 +24,6 @@ const storage = multer.diskStorage({
 })
 
 
-let dirs = getDirectories("./public/petSound/");
 
 const getFileNames = (dir) =>{
     let names = readdirSync('./public/petSound/' + dir + "/");
@@ -46,6 +45,7 @@ app.listen(port, () => {
 
 
 app.get('/download/:filename', (req, res) =>{
+    
     console.log(req.body);
     console.log(req.params.filename);
     res.sendFile(__dirname + '/public/petSound/' + req.params.filename);
@@ -53,6 +53,8 @@ app.get('/download/:filename', (req, res) =>{
 
 
 app.get('/', (req, res) =>{
+    let dirs = getDirectories("./public/petSound/");
+
     const soundList = dirs.map((dir) => {
         return getFileNames(dir);
     })
@@ -90,10 +92,16 @@ app.get('/getSounds', (req, res) =>{
     res.status(200).send(JSON.stringify(message))
 })
 
+const dogMsg = ["I love you", "I want to play with you!", "Get away from me!!", "You're in danger", 
+    "I'm not felling well", "Go pet me"];
+
+
 app.post('/upload', (req, res) =>
 {
+    const randomMsg = dogMsg[Math.floor(Math.random() * dogMsg.length)];
+
     const message = {
-        name: 'Im so happy talking to you!',
+        name: randomMsg,
     };
 
     upload(req, res, (err) =>
