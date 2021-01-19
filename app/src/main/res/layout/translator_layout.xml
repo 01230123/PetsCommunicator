@@ -3,23 +3,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+
     android:layout_height="match_parent">
 
     <ImageButton
         android:id="@+id/record"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_marginBottom="80dp"
-        android:scaleType="fitCenter"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_marginBottom="150dp"
+        android:layout_marginLeft="130dp"
+
         android:src="@drawable/microphone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent" />
 
     <com.jjoe64.graphview.GraphView
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_marginBottom="100dp"
+        android:layout_height="160dp"
+        android:layout_marginBottom="70dp"
         android:id="@+id/graph"
         app:layout_constraintBottom_toTopOf="@id/record"
         />
@@ -28,9 +31,9 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="CLICK TO SPEAK"
-        android:layout_marginTop="32dp"
-        android:textSize="40sp"
+        android:text="WAKEUP THE DOG TO SPEAK"
+        android:layout_marginTop="80dp"
+        android:textSize="20sp"
         android:layout_gravity="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
