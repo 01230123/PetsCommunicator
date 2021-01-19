@@ -34,6 +34,12 @@ public class DownloadItemAdapter extends ArrayAdapter<DownloadItem> {
         assert item != null;
         title.setText(item.getTitle());
         img.setImageBitmap(item.getIcon());
+        img.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                
+            }
+        });
         return convertView;
     }
 }

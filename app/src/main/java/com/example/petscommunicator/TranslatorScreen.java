@@ -25,6 +25,7 @@ import androidx.core.app.ActivityCompat;
 
 import com.example.petscommunicator.server.RetrofitInterface;
 import com.example.petscommunicator.server.UploadAudio;
+import com.example.petscommunicator.server.DogSoundList;
 import com.google.common.io.Files;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.GridLabelRenderer;
@@ -37,6 +38,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 
 import okhttp3.MediaType;
@@ -69,6 +71,7 @@ public class TranslatorScreen extends MySprite{
     private String translation = "";
 
     private List<List<String>> soundList;
+    private boolean translating = false;
 
     @SuppressLint("ClickableViewAccessibility")
     public TranslatorScreen(Context context, MainScreen mainScreen, float top, float left, int width, int height) {
@@ -101,7 +104,7 @@ public class TranslatorScreen extends MySprite{
 //        if (checkWritePermission()) {
 //            download("theme1", "happy");
 //        }
-        getSoundNames();
+//        getSoundNames();
     }
 
     private double getGaussianCurvePoint(double mean, double std, double x)
@@ -144,7 +147,8 @@ public class TranslatorScreen extends MySprite{
     private void stopRecording() {
         //final Toast tStop = Toast.makeText(getContext(),"Stop Recording", Toast.LENGTH_SHORT);
         //tStop.show();
-        tw.setText("value");
+        tw.setText("Translating...");
+        translating = true;
         dogVoiceToTextTranslation(outputFile);
 
         try {
@@ -219,15 +223,21 @@ public class TranslatorScreen extends MySprite{
             public void onResponse(Call<UploadAudio> call, Response<UploadAudio> response) {
                 if (response.code() == 200)
                 {
+                    Log.d("@@@@", "Success");
                     UploadAudio re = response.body();
                     String text = re.getName();
                     tw.setText(text);
+                    translating = false;
+                    mainScreen.invalidate();
                 }
             }
             @Override
             public void onFailure(Call<UploadAudio> call, Throwable t) {
+                Log.d("@@@@", "Failed");
                 Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_LONG).show();
                 tw.setText("Error");
+                translating = false;
+                mainScreen.invalidate();
             }
         });
 
@@ -304,6 +314,7 @@ public class TranslatorScreen extends MySprite{
 
     //@RequiresApi(api = Build.VERSION_CODES.O)
     public void doRecord() {
+        if (translating) return;
         if (!rec)
         {
             //getWritePermission();
@@ -432,12 +443,12 @@ public class TranslatorScreen extends MySprite{
                 // Thus creating a NullPointerException
                 DogSoundList re = response.body();
                 soundList = re.getDogSounds();
-                Log.d("@@@MAIN", "onResponse: "  + soundList.toString());
+                Log.d("@@@@", "onResponse: "  + soundList.toString());
             }
 
             @Override
             public void onFailure(Call<DogSoundList> call, Throwable t) {
-                Log.d("@@@MAIN", "fail main:");
+                Log.d("@@@@", "fail main:");
             }
         });
 

@@ -40,6 +40,7 @@ public class MainScreen extends View {
         createTranslatorScreen();
         createTransitionScreen();
         createBackground();
+        Log.d("@@@@", "Finish loading resources");
 
     }
 

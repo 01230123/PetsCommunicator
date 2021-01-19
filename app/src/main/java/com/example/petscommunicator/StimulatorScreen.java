@@ -73,7 +73,7 @@ public class StimulatorScreen extends MySprite{
             );
             float dogTop = gridHeight * offset[i][0];
             float dogLeft = gridWidth * offset[i][1];
-            Log.d("@@@@", "Set dog " + i + " at " + dogLeft + ", " + dogTop);
+//            Log.d("@@@@", "Set dog " + i + " at " + dogLeft + ", " + dogTop);
             dog.setTop(dogTop);
             dog.setLeft(dogLeft);
             dog.setWidth(gridWidth * offset[i][2]);
