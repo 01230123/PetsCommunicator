@@ -42,7 +42,7 @@ public class DownloadActivity extends AppCompatActivity {
 
     public void getSoundNames()
     {
-        String BASE_URL = "http://10.0.2.2:3000";
+        String BASE_URL = "http://petcommunicator.herokuapp.com";
         Retrofit retrofit = new Retrofit.Builder().baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();

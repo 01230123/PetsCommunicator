@@ -1,6 +1,8 @@
 package com.example.petscommunicator;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.os.Environment;
 import android.os.Handler;
 import android.text.format.Formatter;
@@ -39,6 +41,7 @@ public class DownloadItemAdapter extends ArrayAdapter<DownloadItem> {
         this.mContext = context;
     }
 
+    @SuppressLint("SetTextI18n")
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -48,39 +51,56 @@ public class DownloadItemAdapter extends ArrayAdapter<DownloadItem> {
         TextView title  = convertView.findViewById(R.id.title_id);
         ImageView img = convertView.findViewById(R.id.icon_id);
         DownloadItem item = getItem(position);
-        assert item != null;
-        title.setText(item.getTitle());
+        File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        File file = new File(path, item.getTitle());
+        boolean downloadFlag = !file.exists();
         img.setImageBitmap(item.getIcon());
-        img.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
+        if (downloadFlag)
+            img.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    download(item.getPath(), title);
+                }
+            });
+        else
+            item.setTitle(item.getTitle() + " - Downloaded");
+        title.setText(item.getTitle());
         return convertView;
     }
 
-    public void download(String themeName, String emotionName){
-        String BASE_URL = "http://10.0.2.2:3000";
+    public void download(String url, TextView title){
+        Log.d("@@@@", "Connect to server...");
+        String BASE_URL = "http://petcommunicator.herokuapp.com";
         Retrofit retrofit = new Retrofit.Builder().baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         RetrofitInterface retrofitInterface = retrofit.create(RetrofitInterface.class);
 
-        String audioExtension = ".mp3";
-        String url = themeName + "/" + emotionName + audioExtension;
-        final String fileName = "/" + emotionName + audioExtension;
+        String themeName = url.substring(0, url.indexOf('/'));
+        String fileName = url.substring(url.indexOf('/') + 1);
 
+        File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        File file = new File(path, fileName);
+        if (file.exists()) return;
+
+        Log.d("@@@@", "Start download file from " + url);
+        Log.d("@@@@", "Theme name: " + themeName + ", filename: " + fileName);
         retrofitInterface.downlload(url).enqueue(new Callback<ResponseBody>() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 try {
+//                    ContextWrapper contextWrapper = new ContextWrapper(mContext.getApplicationContext());
+//                    File path = contextWrapper.getDir(
+//                            R.string.internalPath + "/" + themeName,
+//                            Context.MODE_PRIVATE);
                     File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
                     File file = new File(path, fileName);
-                    boolean a = file.createNewFile();
+//                    boolean a = file.createNewFile();
                     Files.asByteSink(file).write(response.body().bytes());
                     String file_size = Formatter.formatShortFileSize(getContext(),file.length());
-                    Log.d("@@@@", file_size);
+                    Log.d("@@@@", "Download file |" + fileName + "| successfully, bytes: " + file_size + ", save at " + path);
+                    title.setText(title.getText() + " - Downloaded");
                 } catch (IOException e) {
                     e.printStackTrace();
                     Log.d("@@@@", "Cannot down load file");
@@ -101,4 +121,11 @@ public class DownloadItemAdapter extends ArrayAdapter<DownloadItem> {
         final Toast tError = Toast.makeText(mContext, "Disconnect from server", Toast.LENGTH_SHORT);
         tError.show();
     }
+
+    private void handleSuccess()
+    {
+        final Toast tSuccess = Toast.makeText(mContext, "Download successfully", Toast.LENGTH_SHORT);
+        tSuccess.show();
+    }
+
 }

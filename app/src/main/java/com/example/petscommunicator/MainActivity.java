@@ -4,12 +4,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 import android.widget.Toast;
+
+import java.io.File;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -19,56 +23,21 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        getWritePermission();
-//        getRecordPermission();
-
+        //set full screen
         DisplayMetrics displayMetrics = getFullScreen();
         int height = displayMetrics.heightPixels;
         int width = displayMetrics.widthPixels;
 
-        //Loading screen
+        //Create or open internal storage
+        ContextWrapper contextWrapper = new ContextWrapper(getApplicationContext());
+        contextWrapper.getDir(String.valueOf(R.string.internalPath), Context.MODE_PRIVATE);
 
         //Main screen
         mainScreen = new MainScreen(this, width, height);
         mainScreen.setKeepScreenOn(true);
     }
 
-    private void getWritePermission() {
-        // Check for permissions
-        int permission = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-        // If we don't have permissions, ask user for permissions
-        if (permission != PackageManager.PERMISSION_GRANTED) {
-            String[] PERMISSIONS_STORAGE = {
-                    android.Manifest.permission.READ_EXTERNAL_STORAGE,
-                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-            };
-            int REQUEST_EXTERNAL_STORAGE = 1;
-
-            ActivityCompat.requestPermissions(
-                    this,
-                    PERMISSIONS_STORAGE,
-                    REQUEST_EXTERNAL_STORAGE
-            );
-        }
-    }
-
-    private void getRecordPermission()
-    {
-        // Check for permissions
-        int permission = ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO);
-
-        // If we don't have permissions, ask user for permissions
-        if (permission != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                    this,
-                    new String[]{Manifest.permission.RECORD_AUDIO},
-                    0
-            );
-        }
-    }
-
-    private DisplayMetrics getFullScreen() {
+        private DisplayMetrics getFullScreen() {
         getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN
