@@ -7,10 +7,11 @@ public class SettingMenuSprite extends MySprite{
     private int itemWidth;
     private int itemHeight;
 
-    private MySprite menuBmp;
+//    private MySprite menuBmp;
     private MySprite menuTextBmp;
     private MySprite modeButtonBmp;
-    private MySprite soundButtonBmp;
+//    private MySprite soundButtonBmp;
+    private MySprite downloadButtonBmp;
     private MySprite creditButtonBmp;
 
     public boolean creditOn;
@@ -29,7 +30,12 @@ public class SettingMenuSprite extends MySprite{
                 getLeft() - 75,
                 getWidth() + 150,
                 getHeight() + 300);
+        if (1 == 1)
+        {
+            int u = 1;
+        }
         creditBmp.addBmp(new int[]{R.drawable.creditpage});
+
     }
 
     public void setMenuBmp(int bmpId)
@@ -55,12 +61,20 @@ public class SettingMenuSprite extends MySprite{
         modeButtonBmp.setLeft(getLeft() + ((float)(getWidth() - modeButtonBmp.getWidth()) / 2));
     }
 
-    public void setSoundButtonBmp(int[] bmpId)
+//    public void setSoundButtonBmp(int[] bmpId)
+//    {
+//        soundButtonBmp = new MenuItemSprite(getContext(), itemWidth, itemHeight);
+//        soundButtonBmp.addBmp(bmpId);
+//        soundButtonBmp.setTop(getTop() + itemHeight * 2 + 3 * (float)itemHeight / 5);
+//        soundButtonBmp.setLeft(getLeft() + ((float)(getWidth() - soundButtonBmp.getWidth()) / 2));
+//    }
+
+    public void setDownloadButtonBmp(int[] bmpId)
     {
-        soundButtonBmp = new MenuItemSprite(getContext(), itemWidth, itemHeight);
-        soundButtonBmp.addBmp(bmpId);
-        soundButtonBmp.setTop(getTop() + itemHeight * 2 + 3 * (float)itemHeight / 5);
-        soundButtonBmp.setLeft(getLeft() + ((float)(getWidth() - soundButtonBmp.getWidth()) / 2));
+        downloadButtonBmp = new MenuItemSprite(getContext(), itemWidth, itemHeight);
+        downloadButtonBmp.addBmp(bmpId);
+        downloadButtonBmp.setTop(getTop() + itemHeight * 2 + 3 * (float)itemHeight / 5);
+        downloadButtonBmp.setLeft(getLeft() + ((float)(getWidth() - downloadButtonBmp.getWidth()) / 2));
     }
 
     public void setCreditButtonBmp(int[] bmpId)
@@ -80,7 +94,8 @@ public class SettingMenuSprite extends MySprite{
             super.draw(canvas);
             menuTextBmp.draw(canvas);
             modeButtonBmp.draw(canvas);
-            soundButtonBmp.draw(canvas);
+//            soundButtonBmp.draw(canvas);
+            downloadButtonBmp.draw(canvas);
             creditButtonBmp.draw(canvas);
         }
         else
@@ -92,18 +107,24 @@ public class SettingMenuSprite extends MySprite{
         return modeButtonBmp.getBmpPos();
     }
 
-    public int isMute()
-    {
-        return (soundButtonBmp.getBmpPos() + 1) % 2;
-    }
+//    public int isMute()
+//    {
+//        return (soundButtonBmp.getBmpPos() + 1) % 2;
+//    }
 
     public void handleButtonsClick(float x, float y) {
         if (modeButtonBmp.isSelected(x, y))
             modeButtonBmp.update();
-        else if (soundButtonBmp.isSelected(x, y))
-            soundButtonBmp.update();
+//        else if (soundButtonBmp.isSelected(x, y))
+//            soundButtonBmp.update();
+        else if (downloadButtonBmp.isSelected(x, y))
+            handleDownloadIntent();
         else if (creditButtonBmp.isSelected(x, y))
             creditOn = true;
+    }
+
+    private void handleDownloadIntent() {
+
     }
 
     public void handleCredit(float x, float y) {

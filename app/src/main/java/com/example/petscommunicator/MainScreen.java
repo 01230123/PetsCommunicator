@@ -44,6 +44,7 @@ public class MainScreen extends View {
     }
 
     private void createBackground() {
+        Log.d("@@@@", "Background loading...");
         background = new MySprite(
                 getContext(),
                 0,
@@ -51,10 +52,11 @@ public class MainScreen extends View {
                 screenWidth,
                 screenHeight - typeSwitchSprite.getHeight()
         );
-        background.addBmp(new int[]{R.drawable.bg});
+        background.addBmp(new int[]{R.drawable.bgdog});
     }
 
     private void createTranslatorScreen() {
+        Log.d("@@@@", "Translator Screen loading...");
         translatorScreen = new TranslatorScreen(
                 getContext(),
                 this,
@@ -67,7 +69,7 @@ public class MainScreen extends View {
     }
 
     private void createStimulatorScreen() {
-
+        Log.d("@@@@", "Stimulator Screen loading...");
         stimulatorScreen = new StimulatorScreen(
                 getContext(),
                 this,
@@ -83,6 +85,7 @@ public class MainScreen extends View {
     }
 
     private void createTransitionScreen() {
+        Log.d("@@@@", "Transition Screen loading...");
         transitionScreen = new TransitionScreen(
                 getContext(),
                 this,
@@ -94,6 +97,7 @@ public class MainScreen extends View {
     }
 
     private void createSettingIcon() {
+        Log.d("@@@@", "Setting Icon loading...");
         int length = screenWidth / 7;
         settingIconSprite = new SettingIconSprite(
                 getContext(),
@@ -106,6 +110,7 @@ public class MainScreen extends View {
     }
 
     private void createSettingMenu() {
+        Log.d("@@@@", "Setting Menu loading...");
         int width = (int)(screenWidth / 1.2);
         int height = screenHeight - settingIconSprite.getLength() * 2;
         settingMenuSprite = new SettingMenuSprite(
@@ -119,6 +124,7 @@ public class MainScreen extends View {
     }
 
     private void createSwitchTypeButton() {
+        Log.d("@@@@", "Switch Type loading...");
         typeSwitchSprite = new TypeSwitchSprite(
                 getContext(),
                 screenWidth,
@@ -299,10 +305,10 @@ public class MainScreen extends View {
         else
             settingMenuSprite.handleButtonsClick(x, y);
         stimulatorScreen.setMode(settingMenuSprite.getCurrentMode());
-        if (settingMenuSprite.isMute() == 0)
-            stimulatorScreen.muteSound();
-        else
-            stimulatorScreen.unmuteSound();
+//        if (settingMenuSprite.isMute() == 0)
+//            stimulatorScreen.muteSound();
+//        else
+//            stimulatorScreen.unmuteSound();
     }
 
     private boolean isSingleClick(float x, float y) {

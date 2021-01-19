@@ -95,10 +95,10 @@ public class TranslatorScreen extends MySprite{
                 .build();
         retrofitInterface = retrofit.create(RetrofitInterface.class);
 
-        getWritePermission();
-        if (checkWritePermission()) {
-            download("theme1", "happy");
-        }
+//        getWritePermission();
+//        if (checkWritePermission()) {
+//            download("theme1", "happy");
+//        }
     }
 
     private double getGaussianCurvePoint(double mean, double std, double x)
