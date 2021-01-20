@@ -5,6 +5,7 @@
   "main": "app.js",
   "dependencies": {
     "audio-decode": "git+https://github.com/audiojs/audio-decode.git",
+    "audiobuffer-to-wav": "^1.0.0",
     "av": "^0.4.9",
     "dsp.js": "git+https://github.com/corbanbrook/dsp.js.git",
     "ejs": "^3.1.5",

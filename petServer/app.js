@@ -221,6 +221,8 @@ const calculateChance = (Range, value)=>
     return 0;    
 }
 
+let toWav = require('audiobuffer-to-wav')
+
 // Return values:
 //  0: Disturbance
 //  1: Isolation
@@ -228,7 +230,7 @@ const calculateChance = (Range, value)=>
 const analyzeAudio = (filedir, callbackfunc) =>
 {
     let buffer = fs.readFileSync(filedir);
-    let result = wav.decode(buffer);
+    let result = wav.decode(toWav(buffer));
 
     let channels = result.channelData; // array of Float32Array
     const signal = channels[0];
