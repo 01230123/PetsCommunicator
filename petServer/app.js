@@ -3,8 +3,13 @@ const app = express();
 const multer = require('multer');
 const ejs = require('ejs');
 const path = require('path');
-const { readdirSync, fs } = require('fs');
+const { readdirSync} = require('fs');
+const fs = require('fs');
+const Meyda = require('meyda');
 const { dir } = require('console');
+const AV = require('av');
+require('flac.js');
+
 
 const getDirectories = source =>
   readdirSync(source, { withFileTypes: true })
@@ -53,6 +58,7 @@ app.get('/download/:filename', (req, res) =>{
 
 
 app.get('/', (req, res) =>{
+    console.log("here");
     let dirs = getDirectories("./public/petSound/");
 
     const soundList = dirs.map((dir) => {
@@ -67,30 +73,6 @@ app.get('/', (req, res) =>{
 
     res.status(200).send(JSON.stringify(message))
 });
-
-app.get('/getSounds', (req, res) =>{
-    const soundList = dirs.map((dir) => {
-        return getFileNames(dir);
-    })
-
-    soundList = ["34", "35", "dgg"];
-
-
-    const message = {
-        dogSounds: soundList,
-    };
-
-    console.log(message);
-
-    // if (soundList.length <= 0)
-    // {
-    //     res.status(500);
-    //     return;
-    // }
-
-    console.log("here");
-    res.status(200).send(JSON.stringify(message))
-})
 
 const dogMsg = [
     // "I love you",
@@ -140,5 +122,102 @@ app.post('/upload', (req, res) =>
 
     res.status(200).send(JSON.stringify(message))
 })
+
+
+
+
+let wav = require('node-wav');
+
+
+let buffer = fs.readFileSync('100hz.wav');
+let result = wav.decode(buffer);
+
+const BUFFER_SIZE = 16384;
+
+Meyda.bufferSize = BUFFER_SIZE;
+
+
+let datas = result.channelData; // array of Float32Array
+ 
+
+//https://stackoverflow.com/questions/32439437/retrieve-an-evenly-distributed-number-of-elements-from-an-array
+function distributedCopy(items, n) {
+    var elements = [items[0]];
+    var totalItems = items.length - 2;
+    var interval = Math.floor(totalItems/(n - 2));
+    for (var i = 1; i < n - 1; i++) {
+        elements.push(items[i * interval]);
+    }
+    elements.push(items[items.length - 1]);
+    return elements;
+}
+
+
+//console.log(result.channelData.length);
+//console.log(Meyda.extract('rms', extracted));
+//console.log(Meyda.extract('perceptualSpread', extracted)); //Amplitude range
+
+
+const { getAudioDurationInSeconds } = require('get-audio-duration');
+ 
+
+// From a local path...
+// getAudioDurationInSeconds('door.wav').then((duration) => {
+//   console.log(duration);
+// });
+
+
+const getAmplitudeSpectrum = (signal) =>
+{
+    let data = distributedCopy(signal, BUFFER_SIZE);
+    console.log(Meyda.extract('spectralCentroid', data));
+    return Meyda.extract('amplitudeSpectrum', data);
+} 
+
+
+
+
+
+const meanFrequency = (array) =>
+{
+    let sum = 0;
+    let sumFre = 0;
+    let freMax = 0;
+    let maxAmp = 0;
+    for (let i = 0; i < array.length; i++){
+        let a = array[i];
+        if(a > maxAmp)
+        {
+            freMax = i;
+            maxAmp = a;
+        }
+        sum += a*i;
+        sumFre += a;
+    };
+
+    console.log(freMax, maxAmp);    
+}
+
+let average = (array) => array.reduce((a, b) => a + b) / array.length;
+
+function findIndicesOfMax(inp, count) {
+    var outp = [];
+    for (var i = 0; i < inp.length; i++) {
+        outp.push(i); // add index to output array
+        if (outp.length > count) {
+            outp.sort(function(a, b) { return inp[b] - inp[a]; }); // descending sort the output array
+            outp.pop(); // remove the last index (index of smallest element in output array)
+        }
+    } 
+    return average(outp);
+}
+
+let spec = getAmplitudeSpectrum(datas[0]);
+console.log(findIndicesOfMax(spec, 10));
+
+console.log(datas[0].length);
+meanFrequency(spec);
+
+
 
 

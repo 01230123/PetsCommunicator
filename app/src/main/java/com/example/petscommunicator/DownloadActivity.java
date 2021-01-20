@@ -56,6 +56,7 @@ public class DownloadActivity extends AppCompatActivity {
                 // If you put your code outside of this function, your code may run before the server response
                 // Thus creating a NullPointerException
                 DogSoundList re = response.body();
+
                 List<List<String>> soundList = re.getDogSounds();
                 Log.d("@@@@", "Successfully get dog sound");
                 Log.d("@@@@", "List size: " + soundList.size());

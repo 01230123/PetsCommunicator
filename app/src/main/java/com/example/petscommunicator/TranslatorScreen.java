@@ -140,13 +140,14 @@ public class TranslatorScreen extends MySprite{
         //tStop.show();
         tw.setText("Translating...");
         translating = true;
-        dogVoiceToTextTranslation(outputFile);
 
         try {
             mediaRecorder.stop();
             mediaRecorder.release();
+            dogVoiceToTextTranslation(outputFile);
         } catch(RuntimeException stopException) {
             // handle cleanup here
+            tw.setText("Cannot get the answer from server");
         }
         handler.removeCallbacks(updateGraph);
     }
@@ -197,9 +198,6 @@ public class TranslatorScreen extends MySprite{
         //Upload the file to the server
         String fileString = "test";
         translation = "here1";
-
-        HashMap<String, String> map = new HashMap<>();
-        map.put("name", "test");
 
         RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), audioFile);
         MultipartBody.Part body =
