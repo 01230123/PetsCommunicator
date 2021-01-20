@@ -69,8 +69,6 @@ public class PlaceholderFragment extends Fragment {
     }
 
     private ArrayList<DownloadItem> createDownloadItem() {
-        if (index == 4)
-            Log.d("@@@@", "Size: " + soundList.size());
         ArrayList<DownloadItem> list = new ArrayList<>();
         for (String sound : soundList)
         {

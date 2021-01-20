@@ -43,15 +43,24 @@ app.listen(port, () => {
 })
 
 
+<<<<<<< HEAD
 app.get('/download/:filename', (req, res) => {
 
+=======
+app.get('/download/:filename', (req, res) =>{
+    
+>>>>>>> 10d5f0d0775d462a3900578bd5289a9822e72a77
     console.log(req.body);
     console.log(req.params.filename);
     res.sendFile(__dirname + '/public/petSound/' + req.params.filename);
 })
 
 
+<<<<<<< HEAD
 app.get('/', (req, res) => {
+=======
+app.get('/', (req, res) =>{
+>>>>>>> 10d5f0d0775d462a3900578bd5289a9822e72a77
     let dirs = getDirectories("./public/petSound/");
 
     const soundList = dirs.map((dir) => {
@@ -117,7 +126,12 @@ const dogMsg = [
 ];
 
 
+<<<<<<< HEAD
 app.post('/upload', (req, res) => {
+=======
+app.post('/upload', (req, res) =>
+{
+>>>>>>> 10d5f0d0775d462a3900578bd5289a9822e72a77
     const randomMsg = dogMsg[Math.floor(Math.random() * dogMsg.length)];
 
     const message = {

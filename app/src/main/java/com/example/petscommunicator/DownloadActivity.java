@@ -24,6 +24,7 @@ public class DownloadActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
         Log.d("@@@@", "Intent success! Start to connect to server");
         getSoundNames();
     }

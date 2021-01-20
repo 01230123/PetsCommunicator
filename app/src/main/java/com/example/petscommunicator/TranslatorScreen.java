@@ -8,9 +8,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.media.MediaRecorder;
-import android.os.Environment;
 import android.os.Handler;
-import android.text.format.Formatter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,10 +18,8 @@ import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
 
-import com.example.petscommunicator.server.DogSoundList;
 import com.example.petscommunicator.server.RetrofitInterface;
 import com.example.petscommunicator.server.UploadAudio;
-import com.google.common.io.Files;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.GridLabelRenderer;
 import com.jjoe64.graphview.series.DataPoint;
@@ -38,7 +34,6 @@ import java.util.Random;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -95,11 +90,6 @@ public class TranslatorScreen extends MySprite{
                 .build();
         retrofitInterface = retrofit.create(RetrofitInterface.class);
 
-//        getWritePermission();
-//        if (checkWritePermission()) {
-//            download("theme1", "happy");
-//        }
-//        getSoundNames();
     }
 
     private double getGaussianCurvePoint(double mean, double std, double x)
@@ -399,54 +389,4 @@ public class TranslatorScreen extends MySprite{
         }
     }
 
-
-    public void download(String themeName, String emotionName){
-        String audioExtension = ".mp3";
-        String url = themeName + "/" + emotionName + audioExtension;
-        final String fileName = "/" + emotionName + audioExtension;
-        retrofitInterface.downlload(url).enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                try {
-                    File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-                    File file = new File(path, fileName);
-                    boolean a = file.createNewFile();
-                    Files.asByteSink(file).write(response.body().bytes());
-                    String file_size = Formatter.formatShortFileSize(getContext(),file.length());
-                    Log.d("@@@@", file_size);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Log.d("@@@@", "Cannot down load file");
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.d("@@@@", "Cannot down load file on failure");
-            }
-        });
-    }
-
-    public List<List<String>> getSoundNames()
-    {
-        retrofitInterface.getSounds().enqueue(new Callback<DogSoundList>() {
-            @Override
-            public void onResponse(Call<DogSoundList> call, Response<DogSoundList> response) {
-                // This is a callback method - meaning it will execute after the server response
-                // If you want to get the result (name list), you should put your code in this function
-                // If you put your code outside of this function, your code may run before the server response
-                // Thus creating a NullPointerException
-                DogSoundList re = response.body();
-                soundList = re.getDogSounds();
-                Log.d("@@@@", "onResponse: "  + soundList.toString());
-            }
-
-            @Override
-            public void onFailure(Call<DogSoundList> call, Throwable t) {
-                Log.d("@@@@", "fail main:");
-            }
-        });
-
-        return soundList;
-    };
 }

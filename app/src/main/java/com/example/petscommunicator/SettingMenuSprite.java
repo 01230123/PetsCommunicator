@@ -1,9 +1,14 @@
 package com.example.petscommunicator;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Canvas;
 import android.util.Log;
+
+import androidx.core.app.ActivityCompat;
 
 public class SettingMenuSprite extends MySprite{
     private int itemWidth;
@@ -122,9 +127,15 @@ public class SettingMenuSprite extends MySprite{
     }
 
     private void handleDownloadIntent() {
-        Log.d("@@@@", "Ready to intent");
-        Intent intent = new Intent(getContext(), DownloadActivity.class);
-        getContext().startActivity(intent);
+        getWritePermission();
+        if (checkWritePermission())
+        {
+            Log.d("@@@@", "Ready to intent");
+            Intent intent = new Intent(getContext(), DownloadActivity.class);
+            getContext().startActivity(intent);
+        }
+        else
+            return;
     }
 
     public void handleCredit(float x, float y) {
@@ -133,5 +144,28 @@ public class SettingMenuSprite extends MySprite{
             y >= creditBmp.getTop() &&
             y <= creditBmp.getTop() + 200)
             creditOn = false;
+    }
+
+    private boolean checkWritePermission()
+    {
+        int permission = ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        return permission == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void getWritePermission() {
+        // Check for permissions
+        if (!checkWritePermission()) {
+            String[] PERMISSIONS_STORAGE = {
+                    android.Manifest.permission.READ_EXTERNAL_STORAGE,
+                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+            };
+            int REQUEST_EXTERNAL_STORAGE = 1;
+
+            ActivityCompat.requestPermissions(
+                    (Activity)getContext(),
+                    PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE
+            );
+        }
     }
 }
