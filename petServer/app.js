@@ -75,52 +75,62 @@ app.get('/', (req, res) =>{
 });
 
 const dogMsg = [
-    // "I love you",
-    // "I want to play with you!",
-    // "Get away from me!!",
-    // "You're in danger", 
-    // "I'm not felling well",
-    // "Go pet me",
-    "Let's play outdoor\nヽ（≧□≦）ノ",
+    ["Let's play outdoor\nヽ（≧□≦）ノ",
     "I'm very hungry\n   o(TヘTo)",
     "I can fly\no(*￣︶￣*)o",
     "What time is it?\no(〃＾▽＾〃)o",
     "I saw a giant bird!\nΣ(っ °Д °;)っ",
     "I'm thirsty\n（〃｀ 3′〃）",
-    "I’m hungry\n＞︿＜.",
-    "I need a girl friend!\n(┬┬﹏┬┬)",
+    "I’m hungry\n＞︿＜."],
+
+    ["I need a girl friend!\n(┬┬﹏┬┬)",
     "Come with me\n( •̀ ω •́ )✧",
     "Follow me!\no(*°▽°*)o",
     "I want to play ball\n(/≧▽≦)/",
     "Glad to meet you\n(´▽`ʃ♡ƪ)",
-    "I'm sleepy\n(✿◡‿◡)",
-    "I’m only a child\n(❁´◡`❁)",
+    "I'm sleepy\n(✿◡‿◡)"],
+    
+    ["I’m only a child\n(❁´◡`❁)",
     "I smell something…\n(⊙ˍ⊙)",
-    "It's so hot!\n(╬▔皿▔)╯"
+    "It's so hot!\n(╬▔皿▔)╯"]
 ];
 
 
 app.post('/upload', (req, res) =>
 {
-    const randomMsg = dogMsg[Math.floor(Math.random() * dogMsg.length)];
 
-    const message = {
-        name: randomMsg,
-    };
 
     upload(req, res, (err) =>
     {
         if (err){
             message.name = "error";
+            res.status(500).send(JSON.stringify(message))
         }
         else{
-            console.log(req.file);
+            try{
+                console.log(req.file);
+                analyzeAudio(req.file.path, (res) =>
+                {
+                    const dogEmoMsg = dogMsg[res];
+                    const randomMsg = dogEmoMsg[Math.floor(Math.random() * dogEmoMsg.length)];
+
+                    const message = {
+                        name: randomMsg,
+                    };
+                    res.status(200).send(JSON.stringify(message))
+                })
+            }
+            catch (err){
+                const dogEmoMsg = dogMsg[0];
+                const randomMsg = dogEmoMsg[Math.floor(Math.random() * dogEmoMsg.length)];
+                
+                const message = {
+                    name: randomMsg,
+                };
+                res.status(200).send(JSON.stringify(message))
+            }
         }
     })    
-
-    
-
-    res.status(200).send(JSON.stringify(message))
 })
 
 
@@ -129,15 +139,11 @@ app.post('/upload', (req, res) =>
 let wav = require('node-wav');
 
 
-let buffer = fs.readFileSync('100hz.wav');
-let result = wav.decode(buffer);
+
 
 const BUFFER_SIZE = 16384;
 
 Meyda.bufferSize = BUFFER_SIZE;
-
-
-let datas = result.channelData; // array of Float32Array
  
 
 //https://stackoverflow.com/questions/32439437/retrieve-an-evenly-distributed-number-of-elements-from-an-array
@@ -153,30 +159,8 @@ function distributedCopy(items, n) {
 }
 
 
-//console.log(result.channelData.length);
-//console.log(Meyda.extract('rms', extracted));
-//console.log(Meyda.extract('perceptualSpread', extracted)); //Amplitude range
-
-
 const { getAudioDurationInSeconds } = require('get-audio-duration');
  
-
-// From a local path...
-// getAudioDurationInSeconds('door.wav').then((duration) => {
-//   console.log(duration);
-// });
-
-
-const getAmplitudeSpectrum = (signal) =>
-{
-    let data = distributedCopy(signal, BUFFER_SIZE);
-    console.log(Meyda.extract('spectralCentroid', data));
-    return Meyda.extract('amplitudeSpectrum', data);
-} 
-
-
-
-
 
 const meanFrequency = (array) =>
 {
@@ -200,7 +184,7 @@ const meanFrequency = (array) =>
 
 let average = (array) => array.reduce((a, b) => a + b) / array.length;
 
-function findIndicesOfMax(inp, count) {
+function findAvgIndicesOfMax(inp, count) {
     var outp = [];
     for (var i = 0; i < inp.length; i++) {
         outp.push(i); // add index to output array
@@ -212,12 +196,76 @@ function findIndicesOfMax(inp, count) {
     return average(outp);
 }
 
-let spec = getAmplitudeSpectrum(datas[0]);
-console.log(findIndicesOfMax(spec, 10));
-
-console.log(datas[0].length);
-meanFrequency(spec);
 
 
+const MAX_FRE = [1300, 1480];
+const MEAN_FRE = [820, 844];
+const AMP_RANGE = [34, 37];
+const DURATION = [3, 10];
 
+const calculateChance = (Range, value)=>
+{  
+    const low = Range[0];
+    const high = Range[1];
 
+    const dis = high - low;
+
+    if (value < low)
+    {
+        return (value - low)/dis;
+    }
+    if (value > high)
+    {
+        return (value - high)/dis;
+    }
+    return 0;    
+}
+
+// Return values:
+//  0: Disturbance
+//  1: Isolation
+//  2: Playful
+const analyzeAudio = (filedir, callbackfunc) =>
+{
+    let buffer = fs.readFileSync(filedir);
+    let result = wav.decode(buffer);
+
+    let channels = result.channelData; // array of Float32Array
+    const signal = channels[0];
+
+    let data = distributedCopy(signal, BUFFER_SIZE);
+    const spectrum = Meyda.extract('amplitudeSpectrum', data);
+    const meanAllFres = Meyda.extract('spectralCentroid', data); // Mean of all frequences
+    const amRange = Meyda.extract('perceptualSpread', data); // Amplitude range
+    const maxFres = findAvgIndicesOfMax(spectrum, 10); //Mean of the top 10 loudess frequences
+    getAudioDurationInSeconds(filedir).then((duration) => {
+      let sum = 0;
+      sum += calculateChance(MEAN_FRE, meanAllFres);
+      sum += calculateChance(MAX_FRE, maxFres);
+      sum += calculateChance(AMP_RANGE, amRange);
+      
+      const A = calculateChance(DURATION, duration);
+      if (A > 0)
+      {
+          sum -= A;
+      }
+      else if (A == 0)
+      {
+          sum += 0.2;
+      }
+
+      const val = calculateChance([-1, 1], sum);
+      let res = 1;
+      if (val < 0)
+      {
+          res = 0;
+      }
+      else if (val > 0)
+      {
+          res = 2;
+      }
+      callbackfunc(res);     
+      return res;
+    });
+    
+}
