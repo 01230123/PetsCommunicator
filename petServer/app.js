@@ -7,28 +7,26 @@ const { readdirSync, fs } = require('fs');
 const { dir } = require('console');
 
 const getDirectories = source =>
-  readdirSync(source, { withFileTypes: true })
+    readdirSync(source, { withFileTypes: true })
     .filter(dirent => dirent.isDirectory())
     .map(dirent => dirent.name)
 
 
 app.use(express.json());
-app.use(express.urlencoded({extended: false}));
+app.use(express.urlencoded({ extended: false }));
 
 const storage = multer.diskStorage({
     destination: './public/audios',
-    filename: function(req, file, cb)
-    {
+    filename: function(req, file, cb) {
         cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
     }
 })
 
 
-let dirs = getDirectories("./public/petSound/");
 
-const getFileNames = (dir) =>{
+const getFileNames = (dir) => {
     let names = readdirSync('./public/petSound/' + dir + "/");
-    return names.map((n) =>{
+    return names.map((n) => {
         return dir + "/" + n;
     })
 }
@@ -45,14 +43,17 @@ app.listen(port, () => {
 })
 
 
-app.get('/download/:filename', (req, res) =>{
+app.get('/download/:filename', (req, res) => {
+
     console.log(req.body);
     console.log(req.params.filename);
     res.sendFile(__dirname + '/public/petSound/' + req.params.filename);
 })
 
 
-app.get('/', (req, res) =>{
+app.get('/', (req, res) => {
+    let dirs = getDirectories("./public/petSound/");
+
     const soundList = dirs.map((dir) => {
         return getFileNames(dir);
     })
@@ -66,7 +67,7 @@ app.get('/', (req, res) =>{
     res.status(200).send(JSON.stringify(message))
 });
 
-app.get('/getSounds', (req, res) =>{
+app.get('/getSounds', (req, res) => {
     const soundList = dirs.map((dir) => {
         return getFileNames(dir);
     })
@@ -90,25 +91,48 @@ app.get('/getSounds', (req, res) =>{
     res.status(200).send(JSON.stringify(message))
 })
 
-app.post('/upload', (req, res) =>
-{
+const dogMsg = [
+    // "I love you",
+    // "I want to play with you!",
+    // "Get away from me!!",
+    // "You're in danger", 
+    // "I'm not felling well",
+    // "Go pet me",
+    "Let's play outdoor\nヽ（≧□≦）ノ",
+    "I'm very hungry\n   o(TヘTo)",
+    "I can fly\no(*￣︶￣*)o",
+    "What time is it?\no(〃＾▽＾〃)o",
+    "I saw a giant bird!\nΣ(っ °Д °;)っ",
+    "I'm thirsty\n（〃｀ 3′〃）",
+    "I’m hungry\n＞︿＜.",
+    "I need a girl friend!\n(┬┬﹏┬┬)",
+    "Come with me\n( •̀ ω •́ )✧",
+    "Follow me!\no(*°▽°*)o",
+    "I want to play ball\n(/≧▽≦)/",
+    "Glad to meet you\n(´▽`ʃ♡ƪ)",
+    "I'm sleepy\n(✿◡‿◡)",
+    "I’m only a child\n(❁´◡`❁)",
+    "I smell something…\n(⊙ˍ⊙)",
+    "It's so hot!\n(╬▔皿▔)╯"
+];
+
+
+app.post('/upload', (req, res) => {
+    const randomMsg = dogMsg[Math.floor(Math.random() * dogMsg.length)];
+
     const message = {
-        name: 'Im so happy talking to you!',
+        name: randomMsg,
     };
 
-    upload(req, res, (err) =>
-    {
-        if (err){
+    upload(req, res, (err) => {
+        if (err) {
             message.name = "error";
-        }
-        else{
+        } else {
             console.log(req.file);
         }
-    })    
+    })
 
-    
+
 
     res.status(200).send(JSON.stringify(message))
 })
-
-

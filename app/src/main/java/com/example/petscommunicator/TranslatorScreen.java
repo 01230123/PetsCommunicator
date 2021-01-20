@@ -23,7 +23,6 @@ import androidx.core.app.ActivityCompat;
 import com.example.petscommunicator.server.DogSoundList;
 import com.example.petscommunicator.server.RetrofitInterface;
 import com.example.petscommunicator.server.UploadAudio;
-import com.example.petscommunicator.server.DogSoundList;
 import com.google.common.io.Files;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.GridLabelRenderer;
@@ -64,7 +63,7 @@ public class TranslatorScreen extends MySprite{
 
     private Retrofit retrofit;
     private RetrofitInterface retrofitInterface;
-    private String BASE_URL = "http://10.0.2.2:3000";
+    private String BASE_URL = "http://petcommunicator.herokuapp.com";
     private String translation = "";
 
     private List<List<String>> soundList;
