@@ -1,16 +1,15 @@
 package com.example.petscommunicator;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager.widget.ViewPager;
 
 import com.example.petscommunicator.server.DogSoundList;
 import com.example.petscommunicator.server.RetrofitInterface;
 import com.google.android.material.tabs.TabLayout;
-
-import androidx.viewpager.widget.ViewPager;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.util.Log;
-import android.widget.Toast;
 
 import java.util.List;
 

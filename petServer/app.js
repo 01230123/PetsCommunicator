@@ -7,27 +7,26 @@ const { readdirSync, fs } = require('fs');
 const { dir } = require('console');
 
 const getDirectories = source =>
-  readdirSync(source, { withFileTypes: true })
+    readdirSync(source, { withFileTypes: true })
     .filter(dirent => dirent.isDirectory())
     .map(dirent => dirent.name)
 
 
 app.use(express.json());
-app.use(express.urlencoded({extended: false}));
+app.use(express.urlencoded({ extended: false }));
 
 const storage = multer.diskStorage({
     destination: './public/audios',
-    filename: function(req, file, cb)
-    {
+    filename: function(req, file, cb) {
         cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
     }
 })
 
 
 
-const getFileNames = (dir) =>{
+const getFileNames = (dir) => {
     let names = readdirSync('./public/petSound/' + dir + "/");
-    return names.map((n) =>{
+    return names.map((n) => {
         return dir + "/" + n;
     })
 }
@@ -44,15 +43,24 @@ app.listen(port, () => {
 })
 
 
+<<<<<<< HEAD
+app.get('/download/:filename', (req, res) => {
+
+=======
 app.get('/download/:filename', (req, res) =>{
     
+>>>>>>> 10d5f0d0775d462a3900578bd5289a9822e72a77
     console.log(req.body);
     console.log(req.params.filename);
     res.sendFile(__dirname + '/public/petSound/' + req.params.filename);
 })
 
 
+<<<<<<< HEAD
+app.get('/', (req, res) => {
+=======
 app.get('/', (req, res) =>{
+>>>>>>> 10d5f0d0775d462a3900578bd5289a9822e72a77
     let dirs = getDirectories("./public/petSound/");
 
     const soundList = dirs.map((dir) => {
@@ -68,7 +76,7 @@ app.get('/', (req, res) =>{
     res.status(200).send(JSON.stringify(message))
 });
 
-app.get('/getSounds', (req, res) =>{
+app.get('/getSounds', (req, res) => {
     const soundList = dirs.map((dir) => {
         return getFileNames(dir);
     })
@@ -118,27 +126,27 @@ const dogMsg = [
 ];
 
 
+<<<<<<< HEAD
+app.post('/upload', (req, res) => {
+=======
 app.post('/upload', (req, res) =>
 {
+>>>>>>> 10d5f0d0775d462a3900578bd5289a9822e72a77
     const randomMsg = dogMsg[Math.floor(Math.random() * dogMsg.length)];
 
     const message = {
         name: randomMsg,
     };
 
-    upload(req, res, (err) =>
-    {
-        if (err){
+    upload(req, res, (err) => {
+        if (err) {
             message.name = "error";
-        }
-        else{
+        } else {
             console.log(req.file);
         }
-    })    
+    })
 
-    
+
 
     res.status(200).send(JSON.stringify(message))
 })
-
-
