@@ -75,24 +75,27 @@ app.get('/', (req, res) =>{
 });
 
 const dogMsg = [
-    ["Let's play outdoor\nヽ（≧□≦）ノ",
-    "I'm very hungry\n   o(TヘTo)",
-    "I can fly\no(*￣︶￣*)o",
+    ["I'm not feeling well\nヽ（≧□≦）ノ",
+    "Stay away from me\n   o(TヘTo)",
+    "Grrrrrrrrrrrrrr\no(*￣︶￣*)o",
     "What time is it?\no(〃＾▽＾〃)o",
-    "I saw a giant bird!\nΣ(っ °Д °;)っ",
-    "I'm thirsty\n（〃｀ 3′〃）",
+    "I'm a big dog! Strong!!!\nΣ(っ °Д °;)っ",
     "I’m hungry\n＞︿＜."],
 
     ["I need a girl friend!\n(┬┬﹏┬┬)",
     "Come with me\n( •̀ ω •́ )✧",
-    "Follow me!\no(*°▽°*)o",
+    "I'm sad! Please play with me\no(*°▽°*)o",
     "I want to play ball\n(/≧▽≦)/",
-    "Glad to meet you\n(´▽`ʃ♡ƪ)",
+    "I need something to eat\n(´▽`ʃ♡ƪ)",
     "I'm sleepy\n(✿◡‿◡)"],
     
     ["I’m only a child\n(❁´◡`❁)",
     "I smell something…\n(⊙ˍ⊙)",
-    "It's so hot!\n(╬▔皿▔)╯"]
+    "It's so hot!\n(╬▔皿▔)╯",
+    "Come with me\n( •̀ ω •́ )✧",
+    "Follow me!\no(*°▽°*)o",
+    "I want to play ball\n(/≧▽≦)/",
+    "Glad to meet you\n(´▽`ʃ♡ƪ)"]
 ];
 
 
@@ -111,8 +114,8 @@ app.post('/upload', (req, res) =>
                 console.log(req.file);
                 analyzeAudio(req.file.path, (res) =>
                 {
-                    const dogEmoMsg = dogMsg[res];
-                    const randomMsg = dogEmoMsg[Math.floor(Math.random() * dogEmoMsg.length)];
+                    const dogEmoMsg = dogMsg[res]; //Get emo type
+                    const randomMsg = dogEmoMsg[Math.floor(Math.random() * dogEmoMsg.length)]; //Random
 
                     const message = {
                         name: randomMsg,
