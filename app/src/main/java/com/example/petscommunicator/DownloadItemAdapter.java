@@ -69,8 +69,8 @@ public class DownloadItemAdapter extends ArrayAdapter<DownloadItem> {
     }
 
     public void download(String url, TextView title){
-        Log.d("@@@@", "Connect to server...");
         String BASE_URL = "http://petcommunicator.herokuapp.com";
+        Log.d("@@@@", "Connect to server " + BASE_URL + "/" + url + "...");
         Retrofit retrofit = new Retrofit.Builder().baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();

@@ -64,7 +64,7 @@ public class TranslatorScreen extends MySprite{
 
     private Retrofit retrofit;
     private RetrofitInterface retrofitInterface;
-    private String BASE_URL = "http://10.0.2.2:3000";
+    private String BASE_URL = "http://petcommunicator.herokuapp.com";
     private String translation = "";
 
     private List<List<String>> soundList;
@@ -308,12 +308,10 @@ public class TranslatorScreen extends MySprite{
         if (translating) return;
         if (!rec)
         {
-            //getWritePermission();
-            //getInternetPermission();
-            //if (checkWritePermission() && checkRecordPermission() && checkInternetPermission())
-            //{
             getRecordPermission();
-            if (checkRecordPermission())
+            getWritePermission();
+            getInternetPermission();
+            if (checkWritePermission() && checkRecordPermission() && checkInternetPermission())
             {
                 rec = true;
                 startRecording();
@@ -328,29 +326,6 @@ public class TranslatorScreen extends MySprite{
         }
         recButton.update();
         mainScreen.invalidate();
-    }
-
-    private boolean checkWritePermission()
-    {
-        int permission = ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        return permission == PackageManager.PERMISSION_GRANTED;
-    }
-
-    private void getWritePermission() {
-        // Check for permissions
-        if (!checkWritePermission()) {
-            String[] PERMISSIONS_STORAGE = {
-                    android.Manifest.permission.READ_EXTERNAL_STORAGE,
-                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-            };
-            int REQUEST_EXTERNAL_STORAGE = 1;
-
-            ActivityCompat.requestPermissions(
-                    (Activity)getContext(),
-                    PERMISSIONS_STORAGE,
-                    REQUEST_EXTERNAL_STORAGE
-            );
-        }
     }
 
     private boolean checkRecordPermission()
@@ -391,6 +366,29 @@ public class TranslatorScreen extends MySprite{
                     (Activity)getContext(),
                     new String[]{Manifest.permission.INTERNET},
                     0
+            );
+        }
+    }
+
+    private boolean checkWritePermission()
+    {
+        int permission = ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        return permission == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void getWritePermission() {
+        // Check for permissions
+        if (!checkWritePermission()) {
+            String[] PERMISSIONS_STORAGE = {
+                    android.Manifest.permission.READ_EXTERNAL_STORAGE,
+                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+            };
+            int REQUEST_EXTERNAL_STORAGE = 1;
+
+            ActivityCompat.requestPermissions(
+                    (Activity)getContext(),
+                    PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE
             );
         }
     }
